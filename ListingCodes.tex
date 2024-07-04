@@ -70,26 +70,24 @@ IntegralImages.Ratio=Ratio;
 \end{lstlisting}
 
 \begin{lstlisting}[style=Matlab-editor, numbers=left,label={lst:HaarCasadeObjectDetection},captionpos=b, caption={Code \textbf{HaarCasadeObjectDetection.m} }]
-	function Objects= HaarCasadeObjectDetection(IntegralImages,HaarCasade,Options)
-	
-	ScaleWidth = IntegralImages.width/HaarCasade.size(1);
-	ScaleHeight = IntegralImages.height/HaarCasade.size(2);
-	if(ScaleHeight < ScaleWidth ), 
+ScaleWidth = IntegralImages.width/HaarCasade.size(1);
+ScaleHeight = IntegralImages.height/HaarCasade.size(2);
+if(ScaleHeight < ScaleWidth ), 
 	StartScale =  ScaleHeight; 
-	else
+else
 	StartScale = ScaleWidth;
-	end
-	
-	Objects=zeros(100,4); n=0; 
-	
-	itt=ceil(log(1/StartScale)/log(Options.ScaleUpdate));
-	
-	for i=1:itt
+end
+
+Objects=zeros(100,4); n=0; 
+
+itt=ceil(log(1/StartScale)/log(Options.ScaleUpdate));
+
+for i=1:itt
 	% Current scale
 	Scale =StartScale*Options.ScaleUpdate^(i-1);    
 	
 	if(Options.Verbose)
-	disp(['Scale : ' num2str(Scale) ' objects detected : ' num2str(n) ])
+		disp(['Scale : ' num2str(Scale) ' objects detected : ' num2str(n) ])
 	end
 	
 	w = floor(HaarCasade.size(1)*Scale);
@@ -104,13 +102,13 @@ IntegralImages.Ratio=Ratio;
 	[x,y] = OneScaleObjectDetection( x, y, Scale, IntegralImages, w, h, HaarCasade);
 	
 	for k=1:length(x);
-	n=n+1; Objects(n,:)=[x(k) y(k) w h];
+		n=n+1; Objects(n,:)=[x(k) y(k) w h];
 	end
-	end
-	
-	Objects=Objects(1:n,:);
-	
-	Objects=Objects*IntegralImages.Ratio;
+end
+
+Objects=Objects(1:n,:);
+
+Objects=Objects*IntegralImages.Ratio;
 \end{lstlisting}
 
 \begin{lstlisting}[style=Matlab-editor, numbers=left,label={lst:ObjectDetection},captionpos=b, caption={Code \textbf{ObjectDetection.m} }]
