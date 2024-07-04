@@ -1,0 +1,160 @@
+\subsection{Listing of the Codes}
+
+\begin{lstlisting}[style=Matlab-editor, numbers=left, label={lst:GetIntergralImages},captionpos=b, caption={Code \textbf{GetIntergralImages.m} }]
+Picture=im2double(Picture);
+
+if(Options.Resize)
+if (size(Picture,2) > size(Picture,1)),
+	Ratio = size(Picture,2) / 384;
+else
+	Ratio = size(Picture,1) / 384;
+end
+	Picture = imresize(Picture, [size(Picture,1) size(Picture,2) ]/ Ratio);
+else
+	Ratio=1;
+end
+
+if(size(Picture,3)>1),
+	Picture=0.2989*Picture(:,:,1) + 0.5870*Picture(:,:,2)+ 0.1140*Picture(:,:,3);
+end
+
+s=zeros([size(Picture,1),size(Picture,2)]);
+ii=zeros([size(Picture,1),size(Picture,2)]);
+for x=1:size(Picture,1)
+	for y=1:size(Picture,2)
+		if(x==1 && y==1)
+			s(x,y)=Picture(x,y);
+			ii(x,y)=s(x,y);
+		elseif(x==1 && y>1)
+			s(x,y)=s(x,y-1)+Picture(x,y);
+			ii(x,y)=s(x,y);
+		elseif(x>1 && y==1)
+			s(x,y)=Picture(x,y);
+			ii(x,y)=ii(x-1,y)+s(x,y);
+		else
+			s(x,y)=s(x,y-1)+Picture(x,y);
+			ii(x,y)=ii(x-1,y)+s(x,y);
+		end
+	end
+end
+IntegralImages.ii=ii;
+
+IntegralImages.ii=padarray(IntegralImages.ii,[1 1], 0, 'pre');
+
+s2=zeros([size(Picture,1),size(Picture,2)]);
+ii2=zeros([size(Picture,1),size(Picture,2)]);
+for x=1:size(Picture,1)
+	for y=1:size(Picture,2)
+		if(x==1 && y==1)
+			s2(x,y)=Picture(x,y)^2;
+			ii2(x,y)=s(x,y);
+		elseif(x==1 && y>1)
+			s2(x,y)=s(x,y-1)+Picture(x,y)^2;
+			ii2(x,y)=s(x,y);
+		elseif(x>1 && y==1)
+			s2(x,y)=Picture(x,y)^2;
+			ii2(x,y)=ii2(x-1,y)+s2(x,y);
+		else
+			s2(x,y)=s2(x,y-1)+Picture(x,y)^2;
+			ii2(x,y)=ii2(x-1,y)+s2(x,y);
+		end
+	end
+end
+IntegralImages.ii2=ii2;
+
+IntegralImages.ii2=padarray(IntegralImages.ii2,[1 1], 0, 'pre');
+
+IntegralImages.width = size(Picture,2);
+IntegralImages.height = size(Picture,1);
+IntegralImages.Ratio=Ratio;
+\end{lstlisting}
+
+\begin{lstlisting}[style=Matlab-editor, numbers=left,label={lst:HaarCasadeObjectDetection},captionpos=b, caption={Code \textbf{HaarCasadeObjectDetection.m} }]
+	function Objects= HaarCasadeObjectDetection(IntegralImages,HaarCasade,Options)
+	
+	ScaleWidth = IntegralImages.width/HaarCasade.size(1);
+	ScaleHeight = IntegralImages.height/HaarCasade.size(2);
+	if(ScaleHeight < ScaleWidth ), 
+	StartScale =  ScaleHeight; 
+	else
+	StartScale = ScaleWidth;
+	end
+	
+	Objects=zeros(100,4); n=0; 
+	
+	itt=ceil(log(1/StartScale)/log(Options.ScaleUpdate));
+	
+	for i=1:itt
+	% Current scale
+	Scale =StartScale*Options.ScaleUpdate^(i-1);    
+	
+	if(Options.Verbose)
+	disp(['Scale : ' num2str(Scale) ' objects detected : ' num2str(n) ])
+	end
+	
+	w = floor(HaarCasade.size(1)*Scale);
+	h = floor(HaarCasade.size(2)*Scale);
+	
+	step = floor(max( Scale, 2 ));
+	
+	[x,y]=ndgrid(0:step:(IntegralImages.width-w-1),0:step:(IntegralImages.height-h-1)); x=x(:); y=y(:);
+	
+	if(isempty(x)), continue; end
+	
+	[x,y] = OneScaleObjectDetection( x, y, Scale, IntegralImages, w, h, HaarCasade);
+	
+	for k=1:length(x);
+	n=n+1; Objects(n,:)=[x(k) y(k) w h];
+	end
+	end
+	
+	Objects=Objects(1:n,:);
+	
+	Objects=Objects*IntegralImages.Ratio;
+\end{lstlisting}
+
+\begin{lstlisting}[style=Matlab-editor, numbers=left,label={lst:ObjectDetection},captionpos=b, caption={Code \textbf{ObjectDetection.m} }]
+	function Objects = ObjectDetection(Picture,FilenameHaarcasade,Options)
+	
+	defaultoptions=struct('ScaleUpdate',1/1.2,'Resize',true,'Verbose',true);
+	
+	functionname='ObjectDetection.m';
+	functiondir=which(functionname);
+	functiondir=functiondir(1:end-length(functionname));
+	addpath([functiondir '/SubFunctions'])
+
+	if(ischar(Picture))
+		if(~exist(Picture,'file'))
+			error('face_detect:inputs','Image not Found');
+		end
+	end
+	if(~exist(FilenameHaarcasade,'file'))
+		error('face_detect:inputs','Haarcasade not Found');
+	end
+
+	if(~exist('Options','var')), Options=defaultoptions;
+	else
+		tags = fieldnames(defaultoptions);
+		
+	for i=1:length(tags),
+		if(~isfield(Options,tags{i})), Options.(tags{i})=defaultoptions.(tags{i}); end
+	end
+		if(length(tags)~=length(fieldnames(Options))),
+			warning('image_registration:unknownoption','unknown options found');
+		end
+	end
+
+	if(ischar(Picture))
+		Picture = imread(Picture);
+	end
+
+	HaarCasade=GetHaarCasade(FilenameHaarcasade);
+
+	IntergralImages= GetIntergralImages(Picture,Options);
+	
+	Objects = HaarCasadeObjectDetection(IntergralImages,HaarCasade,Options);
+
+	if(nargout==0)
+		ShowDetectionResult(Picture,Objects);
+	end
+\end{lstlisting}
