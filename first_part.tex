@@ -55,47 +55,46 @@ The code for Viola Jones is composed by the following files
 
 \noindent On line from 1 to 7 of the Listing \ref{lst:HaarCasadeObjectDetection}, we calculate the initial window size.\\
 
-\noindent On line 11  of the Listing \ref{lst:HaarCasadeObjectDetection}, we calculate the number of total iterations, that is, the number of different \textbf{window} sizes that there exist with the $Options.ScaleUpdate$.\\
+\noindent On line 11 of the Listing \ref{lst:HaarCasadeObjectDetection}, we calculate the number of total iterations, that is, the number of different \textbf{window} sizes that exist with the $Options.ScaleUpdate$.\\
 
 \noindent On line from 13 to 35 of the Listing \ref{lst:HaarCasadeObjectDetection}, we compute the \textbf{Rectangle} matrices using the properties of the \textbf{integral matrix} \ref{fig:integral_properties}.\\
 
-\noindent On line 9  of the Listing \ref{lst:HaarCasadeObjectDetection}, we transform the \textbf{Rectangle} matrices to the actual size of the image.
+\noindent On line 9 of the Listing \ref{lst:HaarCasadeObjectDetection}, we transform the \textbf{Rectangle} matrices to the original size of the image.
 
-
-
-\begin{figure}[h]
+\begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.75\textwidth]{T1/classifier}
+	\includegraphics[width=0.65\textwidth]{T1/classifier}
 	\caption{Cascade Classifier}
 	\label{fig:slideT1}
 \end{figure}
-\begin{figure}[h]
+\begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.75\textwidth]{T1/integral_image}
+	\includegraphics[width=0.65\textwidth]{T1/integral_image}
 	\caption{Integral Image calculation}
 	\label{fig:integral}
 \end{figure}
-\begin{figure}[h]
+\begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.75\textwidth]{T1/integral_image_properties}
+	\includegraphics[width=0.65\textwidth]{T1/integral_image_properties}
 	\caption{Integral Image properties}
 	\label{fig:integral_properties}
 \end{figure}
 
-\subsection{results:}
+\subsection{Results:}
 
-\noindent Here we show an image where some faces are clearly visible, which are enclosed in the \textbf{Rectangle}s that can be seen in Figure \ref{fig:image}.\\
+\noindent Here we show an image where some faces are clearly visible, which are enclosed in the \textbf{Rectangles} that can be seen in Figure \ref{fig:image}.\\
 
-\begin{figure}[h]
+
+\begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.75\textwidth]{T1/image}
+	\includegraphics[width=0.65\textwidth]{T1/image}
 	\caption{This image contains the detected \textbf{Rectangle}}
 	\label{fig:image}
 \end{figure}
 \noindent And in figure \ref{fig:scale} we can see how many faces were found per scale.
-\begin{figure}[h]
+\begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.75\textwidth]{T1/scales}
+	\includegraphics[width=0.60\textwidth]{T1/scales}
 	\caption{These are the \textbf{Rectangle} found in each scale}
 	\label{fig:scale}
 \end{figure}
