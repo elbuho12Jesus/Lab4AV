@@ -3,8 +3,8 @@ The code for Viola Jones is composed by the following files
 \begin{itemize}
 	\item \textbf{ConvertHaarcasadeXMLOpenCV.m}: This function is required to translate OpenCV feature functions from XML to syntax Matlab in order to be compiled.
 	\item \textbf{ObjectDetection.m}: This is the beginning of the detection, where the input parameters are received and invokes the functions \textbf{GetIntergralImages.m} and  \textbf{HaarCasadeObjectDetection.m}.
-\item \textbf{GetIntergralImages.m}: This function computes the \textbf{integral matrix} for the image.
-\item \textbf{HaarCasadeObjectDetection.m}: This function uses the Cascade Classifier to calculate the \textbf{Rectangle} matrices. 
+	\item \textbf{GetIntergralImages.m}: This function computes the \textbf{integral matrix} for the image.
+	\item \textbf{HaarCasadeObjectDetection.m}: This function uses the Cascade Classifier to calculate the \textbf{Rectangle} matrices. 
 \end{itemize}
 
 \subsection{Code:}
@@ -27,12 +27,11 @@ The code for Viola Jones is composed by the following files
 
 \noindent On lines from 2 to 12 of the Listing \ref{lst:GetIntergralImages}, the image resize mentioned is performed (option resize). The reason for the ratio between the real size of the image and its current size is saved $Ratio=size(Picture,2)/384$.\\
 
+\noindent On lines from 14 to 16 of the Listing \ref{lst:GetIntergralImages}, we convert the image to greyscale, which means, that our pixels no longer have 3 values (r,g,b) but have a single value.\\
 
-\noindent On lines from 14 to 16 of the Listing \ref{lst:GetIntergralImages}, here we convert the image to garyscale, which means, that our pixels no longer have 3 values (r,g,b) buy have a single value.\\
+\noindent On lines from 18 to 39 of the Listing \ref{lst:GetIntergralImages}, we compute the \textbf{integral matrix} for the image. In the Figure \ref{fig:integral} we can see how compute the  \textbf{integral matrix}.
 
-\noindent On lines from 18 to 39 of the Listing \ref{lst:GetIntergralImages}, here we compute the \textbf{integral matrix} for the image, in the Figure \ref{fig:integral} you can see how compute the  \textbf{integral matrix}.
-
-\noindent On lines from 41 to 62 of the Listing \ref{lst:GetIntergralImages}, here we compute the \textbf{integral matrix} for $I2$, where $I2$ is
+\noindent On lines from 41 to 62 of the Listing \ref{lst:GetIntergralImages}, we compute the \textbf{integral matrix} for $I2$, where $I2$ is
 \begin{equation}
 	\text{let }	I=
 	\begin{pmatrix}
@@ -50,9 +49,9 @@ The code for Viola Jones is composed by the following files
 	\end{pmatrix}
 \end{equation}
 
-\noindent On lines from 64 to 66 of the Listing \ref{lst:GetIntergralImages}, here we only add the \textbf{height} and \textbf{width} of the current image (with a maximum side like 384), and the \textbf{ratio} of change of the image resize to structure $IntegralImages$.
+\noindent On lines from 64 to 66 of the Listing \ref{lst:GetIntergralImages}, here we only add the \textbf{height} and \textbf{width} of the current image (with a maximum side like 384), and the \textbf{ratio} of change of the image resize to structure $IntegralImages$.\\ %side or size?
 
-\noindent On line 39 of the Listing \ref{lst:ObjectDetection}, we call the function $HaarCasadeObjectDetection$, which applies cascade classification to find the \textbf{Rectangle} matrices that contain the faces that appear in the image.
+\noindent On line 39 of the Listing \ref{lst:ObjectDetection}, we call the function $HaarCasadeObjectDetection$, which applies cascade classification to find the \textbf{Rectangle} matrices that contain the faces that appear in the image.\\
 
 \noindent On line from 1 to 7 of the Listing \ref{lst:HaarCasadeObjectDetection}, we calculate the initial window size.\\
 
